@@ -95,6 +95,8 @@ class RouterDsl internal constructor (private val dsl: (RouterDsl.() -> Unit)) {
 
     fun path(pattern: String): RequestPredicate = RequestPredicates.path(pattern)
 
+    fun pathExtension(extension: String): RequestPredicate = RequestPredicates.pathExtension(extension)
+
     /**
      * Return a composed routing function created from all the registered routes.
      */

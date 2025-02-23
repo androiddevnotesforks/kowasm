@@ -97,13 +97,16 @@ object RequestPredicates {
      * @param pattern the path pattern to match to
      * @return a predicate that tests against the given path pattern
      */
-    @Suppress("NAME_SHADOWING")
     fun path(pattern: String): RequestPredicate {
         var pattern = pattern
         if (pattern.isNotEmpty() && !pattern.startsWith("/")) {
             pattern = "/$pattern"
         }
         return PathPredicate(pattern)
+    }
+
+    fun pathExtension(extension: String): RequestPredicate {
+        return PathExtensionPredicate(extension)
     }
 
     /**
@@ -210,6 +213,28 @@ object RequestPredicates {
         override fun test(request: ServerRequest): Boolean {
             // TODO support path pattern
             return request.path == pattern
+        }
+    }
+
+    private class PathExtensionPredicate(private val extension: String) : RequestPredicate {
+        override fun test(request: ServerRequest): Boolean {
+            val path = request.path
+            var end = path.indexOf('?')
+            val fragmentIndex = path.indexOf('#')
+            if (fragmentIndex != -1 && (end == -1 || fragmentIndex < end)) {
+                end = fragmentIndex
+            }
+            if (end == -1) {
+                end = path.length
+            }
+            val begin = path.lastIndexOf('/', end) + 1
+            val paramIndex = path.indexOf(';', begin)
+            end = (if (paramIndex != -1 && paramIndex < end) paramIndex else end)
+            val extIndex = path.lastIndexOf('.', end)
+            if (extIndex != -1 && extIndex >= begin) {
+                return path.substring(extIndex + 1, end) == extension
+            }
+            return false
         }
     }
 

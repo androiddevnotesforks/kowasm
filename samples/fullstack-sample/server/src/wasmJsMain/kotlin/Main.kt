@@ -5,6 +5,7 @@
 
 import org.kowasm.wasi.Wasi
 import org.kowasm.web.http.MediaType
+import org.kowasm.web.http.Method
 import org.kowasm.web.http.RequestHeaderName
 import org.kowasm.web.nodejs.startNodejs
 import org.kowasm.web.webServer
@@ -24,8 +25,9 @@ fun main() {
                     .contentType(MediaType.APPLICATION_JAVASCRIPT)
                     .body(fileContent)
             }
-            GET("/kowasm-samples-fullstack-sample-client-wasm-js.wasm") {
-                val descriptor = Wasi.openAt("dist/wasmJs/productionExecutable/kowasm-samples-fullstack-sample-client-wasm-js.wasm")
+            (method(Method.GET) and pathExtension("wasm")) {
+                val fileName = it.path
+                val descriptor = Wasi.openAt("dist/wasmJs/productionExecutable$fileName")
                 val fileContent = Wasi.read(descriptor, 100000u).data
                 ok()
                     .contentType(MediaType.APPLICATION_WASM)

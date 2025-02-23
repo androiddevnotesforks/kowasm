@@ -3,7 +3,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsExec
 
 plugins {
-    kotlin("multiplatform") version "2.1.20-Beta2" apply false
+    kotlin("multiplatform") version "2.1.20-RC" apply false
     id("org.jetbrains.dokka") version "2.0.0"
 }
 
